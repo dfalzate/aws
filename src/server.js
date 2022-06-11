@@ -9,8 +9,9 @@ app.use(express.urlencoded({ extended: true }));
 
 const usuarios = [];
 
-const credentials = new aws.SharedIniFileCredentials({
-  profile: "default",
+const credentials = new aws.Credentials({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
 const sns = new aws.SNS({
@@ -24,7 +25,7 @@ app.post("/user", async (req, res) => {
   res.send("Usuario agregado");
   sns
     .publish({
-      Message: "Usuario creado",
+      Message: `Data: ${JSON.stringify(data)}`,
       Subject: "Usuario creado",
       TopicArn: process.env.TOPIC_ARN,
     })
